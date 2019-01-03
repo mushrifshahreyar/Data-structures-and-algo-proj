@@ -19,13 +19,14 @@ node Create_node() {
 	return temp;
 }
 
-node create(node head) {
+node create(node head,FILE *fp) {
 	int n,val;
 	node array;
-	printf("\nEnter the total number: ");
-	scanf("%d",&n);
+	/*printf("\nEnter the total number: ");
+	scanf("%d",&n);*/
+	fscanf(fp,"%d",&n);
 	for(int i=0;i<n;++i) {
-		scanf("%d",&val);
+		fscanf(fp,"%d",&val);
 		if(head == NULL) {
 			head=Create_node();
 			array = head;
@@ -39,73 +40,48 @@ node create(node head) {
 	}
 	return head;
 }
-void print(node head) {
+void print(node head,FILE *fp) {
 	if(head == NULL) {
-		printf("\nEmpty List\n");
+		fprintf(fp,"\nEmpty List");
 		return;
 	}
+	fprintf(fp,"\n");
 	while(head!= NULL) {
-		printf("%d ",head->data);
+		fprintf(fp,"%d ",head->data);
 		head = head->next;
 	}
 }
 
-int partition(int arr[],int first,int last) {
-	int x = arr[last];
-	int i = first-1;
-	for(int j = first; j < last; j++) {
-		if(arr[j] <= x) {
-			i = i+1;
-			int swap = arr[i];
-			arr[i] = arr[j];
-			arr[j] = swap;
-		}
-	}
-	int swap = arr[i+1];
-	arr[i+1] = arr[last];
-	arr[last] = swap;
-	return i+1;
-}
-void quick_sort(int arr[],int first,int last) {
-	if(first < last) {
-		int p = partition(arr,first,last);
-		quick_sort(arr,first,p-1);
-		quick_sort(arr,p+1,last);
-	}
-}
-void h_occur(node head) {
+void h_occur(node head,FILE *fp) {
 	node array = head;
 	int arr[100],n=0;
+	int count=0,maxcount=0,res;
 	while(array != NULL) {
 		arr[n]=array->data;
 		array = array->next;
 		n++;
 	}
-	//sorting
-	quick_sort(arr,0,n-1);
-	
-	//counting frequency
-
-	int max_count = 1, ele = arr[0], cur_count = 1;
-	for(int i=1;i<n;++i) {
-		if(arr[i] == arr[i-1]) {
-			cur_count++;
+	for(int i=0;i<n;i++) {
+		for(int j=0;j<n;j++) {
+			if(arr[i] == arr[j]) {
+				count++;
+			}
 		}
-		else {
-			if(cur_count > max_count) {
-				max_count = cur_count;
-				ele = arr[i-1];
-			}	
-			cur_count=1;
+		if(count>maxcount) {
+			maxcount=count;
+			res = arr[i];
 		}
+		count=0;
 	}
-	printf("%d ",ele);
+	fprintf(fp,"\n%d ",res);
 }
-node add_node(node head) {
+
+node add_node(node head,FILE *fp) {
 	int val;
 	node array;
-	printf("\nEnter the element :");
-	scanf("%d",&val);
+	/*printf("\nEnter the element :");
+	scanf("%d",&val);*/
+	fscanf(fp,"%d",&val);
 	if(head == NULL) {
 		head = Create_node();
 		array = head;
@@ -125,22 +101,34 @@ node add_node(node head) {
 void main() {
 	char option;
 	node head=NULL;
+	int count_create=0;
+	FILE *f_input,*f_output;
+	f_output = fopen("output.txt","w");
+	f_input = fopen("input.txt","r");
 	while(1) {
-		printf("\nEnter the option :");
+		/*printf("\nEnter the option :");
 		
-		scanf(" %c",&option);
-		
+		scanf(" %c",&option);*/
+		int r = fscanf(f_input," %c",&option);
+		if(feof(f_input)) {
+			break;
+		}
+		//printf("\noption : %c\n%d",option,r);	
 		switch(option) {
-			case 'c': head = create(head); 
+			case 'c': if(count_create > 1) {
+						  head = NULL;
+					  }
+					  head = create(head,f_input);
+					  count_create++;
 		              break;
 			
-			case 'p': print(head); 
+			case 'p': print(head,f_output); 
 					  break;
 			
-			case 'a': head = add_node(head);
+			case 'a': head = add_node(head,f_input);
 					  break;
 			
-			case 'h': h_occur(head);
+			case 'h': h_occur(head,f_output);
 					  break;
 
 			case 's': printf("\nThank You for using the program\n");
@@ -150,4 +138,7 @@ void main() {
 			default : printf("\nPlease enter a valid option");
 		}
 	}
+	fprintf(f_output,"\n");
+	fclose(f_input);
+	fclose(f_output);
 }

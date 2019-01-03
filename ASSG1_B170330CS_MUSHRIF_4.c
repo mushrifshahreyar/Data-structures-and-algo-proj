@@ -21,10 +21,10 @@ node Create_node() {
 	return temp;
 }
 //INSERTING AN ELEMENT IN THE TREE
-node insert(node head) {
+node insert(node head,FILE *fp) {
 	int val;
-	printf("\nEnter the value :");
-	scanf("%d",&val);
+	//printf("\nEnter the value :");
+	fscanf(fp,"%d",&val);
 	node z = Create_node();
 	z->data = val;
 	node y,x;
@@ -126,7 +126,7 @@ node successor(node head,int val) {
 	node x;
 	x = tree_search(head,val);
 	if(x == NULL) {
-		printf("\nNo such element found");
+		printf("\nNIL");
 		return NULL;
 	}
 	if(x->right != NULL) {
@@ -144,7 +144,7 @@ node predessor(node head,int val) {
 	node x;
 	x = tree_search(head,val);
 	if(x == NULL) {
-		printf("\nNo such element found:");
+		printf("\nNIL");
 		return head;
 	}
 	if(x ->left != NULL) {
@@ -162,7 +162,7 @@ node delete(node head,int ele) {
 	node z = tree_search(head,ele);
 	node y=NULL,x=NULL;
 	if(z == NULL) {
-		printf("\nElement not found\n");
+		printf("\nNot found");
 		return NULL;
 	}
 	if(z->left == NULL || z->right == NULL) {
@@ -197,49 +197,77 @@ node delete(node head,int ele) {
 void main() {
 	
 	char option[10];
+	FILE *fp;
+	fp = fopen("input.txt","r");
 	int val;
 	node head = NULL;
 	node x;	
 	while(1) {
-		printf("\nEnter the option :");
-		scanf("%s",option);
-		
-		if(strcmp(option,"insr") == 0) {
-			head = insert(head);
+		fscanf(fp,"%s",option);
+		printf("\nOption - %s",option);
+		if(feof(fp)) {
+			break;
 		}
-		else if(strcmp(option,"inorder") == 0) {
+		if(strcmp(option,"insr") == 0) {
+			head = insert(head,fp);
+		}
+		else if(strcmp(option,"minm") == 0) {
+			if(head == NULL) {
+				printf("NIL");
+			}
+			else {
+				node x = minimum(head);
+				printf("\n%d",x->data);
+			}
+		}
+		else if(strcmp(option,"maxm") == 0) {
+			if(head == NULL) {
+				printf("\nNIL");
+			}
+			else {
+				node x = maximum(head);
+				printf("\n%d",x->data);
+			}
+		}
+		else if(strcmp(option,"inor") == 0) {
+			printf("\n");
 			inorder_tree(head);
 		}
-		else if(strcmp(option,"preorder") == 0) {
+		else if(strcmp(option,"prer") == 0) {
+			printf("\n");
 			preorder_tree(head);
 		}
-		else if(strcmp(option,"postorder") == 0) {
+		else if(strcmp(option,"post") == 0) {
+			printf("\n");
 			postorder_tree(head);
 		}
-		else if(strcmp(option,"search") == 0) {
-			printf("\nEnter the key :");
+		else if(strcmp(option,"srch") == 0) {
+			//printf("\nEnter the key :");
 			int val;
-			scanf("%d",&val);
+			fscanf(fp,"%d",&val);
 			tree_search(head,val);
 		}
-		else if(strcmp(option,"successor") == 0) {
-			printf("\nEnter the element :");
-			scanf("%d",&val);
+		else if(strcmp(option,"succ") == 0) {
+			//printf("\nEnter the element :");
+			fscanf(fp,"%d",&val);
 			x = successor(head,val);
 			if(x != NULL)
 				printf("\nSuccessor is : %d",x->data);
 		}
-		else if(strcmp(option,"predessor") == 0) {
-			printf("\nEnter the element :");
-			scanf("%d",&val);
+		else if(strcmp(option,"pred") == 0) {
+			//printf("\nEnter the element :");
+			fscanf(fp,"%d",&val);
 			x = predessor(head,val);
 			if(x != NULL) 
 				printf("\nPredessor is : %d",x->data);
 		}
-		else if(strcmp(option,"delete") == 0) {
-			printf("\nEnter the element :");
-			scanf("%d",&val);
+		else if(strcmp(option,"delt") == 0) {
+			//printf("\nEnter the element :");
+			fscanf(fp,"%d",&val);
 			head = delete(head,val);
+		}
+		else if(strcmp(option,"stop") == 0) {
+			break;
 		}
 		
 	}

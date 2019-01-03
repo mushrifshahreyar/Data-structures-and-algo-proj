@@ -30,26 +30,27 @@ int partition(int *a,int first,int last) {
 	return point;
 }
 //KEEPING TRACK OF CREATE_NODE IN BINARY TREE
-int i=0;
+int node_count=0;
 node create_binary_tree(int *a,int first,int last,int size) {
-	if(first<=last && first < size && last < size) {
-		node root = Create_node(a[first]);
-		i++;
-		if(i>=size) {
+	if(first<=last && first < size) {
+		if(node_count >= size) {
 			return NULL;
 		}
+		node root = Create_node(a[first]);
+		node_count++;
+
 		if(first == last) {
-			//printf("FIRST IF first - %d\t last - %d\n",first,last);
+			printf("FIRST IF first - %d\t last - %d\n",first,last);
 			return root;
 		}
 		int p = partition(a,first,last);
-		//printf("ELSE IF  first - %d\t last - %d\n",first,last);
+		printf("ELSE IF  first - %d\t last - %d\n",first,last);
 		root->left = create_binary_tree(a,first+1,p,size);
 		root->right = create_binary_tree(a,p+1,last,size);
 		return root;
 	}
 	else {
-		//printf("ELSE     first - %d\t last - %d\n",first,last);		
+		printf("ELSE     first - %d\t last - %d\n",first,last);		
 		return NULL;
 	}
 }
@@ -78,6 +79,7 @@ void print_tree(node root) {
 		printf(")");
 	}
 }
+
 void main() {
 	int a[100];
 	int n;
@@ -86,6 +88,13 @@ void main() {
 	for(int i=0;i<n;++i) {
 		scanf("%d",&a[i]);
 	}	
+	/*
+	printf("-- ");
+	for(int i=0;i<n;++i) {
+		printf("%d ", a[i]);
+	}
+	printf("\n");
+	*/
 	node root = create_binary_tree(a,0,n-1,n);
 	print_inorder(root);
 	printf("\n");
